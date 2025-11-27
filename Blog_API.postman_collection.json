@@ -1,0 +1,415 @@
+{
+	"info": {
+		"_postman_id": "blog-api-collection",
+		"name": "Blog API",
+		"description": "REST API collection for Blog application with authentication, posts, and comments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"john_doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"securepass123\",\n    \"password_confirm\": \"securepass123\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/signup/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "signup", ""]
+						},
+						"description": "Register a new user. User will receive an email verification link. User account will be inactive until email is verified."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"john_doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"securepass123\",\n    \"password_confirm\": \"securepass123\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/auth/signup/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "auth", "signup", ""]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User created successfully. Please check your email to verify your account.\",\n    \"user\": {\n        \"id\": 1,\n        \"username\": \"john_doe\",\n        \"email\": \"john@example.com\",\n        \"first_name\": \"John\",\n        \"last_name\": \"Doe\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/verify-email/{{uidb64}}/{{token}}/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "verify-email", "{{uidb64}}", "{{token}}", ""]
+						},
+						"description": "Verify user email address. Use the link sent to user's email after signup. Replace {{uidb64}} and {{token}} with values from the email."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/auth/verify-email/{{uidb64}}/{{token}}/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "auth", "verify-email", "{{uidb64}}", "{{token}}", ""]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Email verified successfully. You can now log in.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"securepass123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login", ""]
+						},
+						"description": "Login with email and password. Returns authentication token. Save the token for authenticated requests."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"securepass123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/auth/login/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "auth", "login", ""]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"token\": \"9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b\",\n    \"user\": {\n        \"id\": 1,\n        \"username\": \"john_doe\",\n        \"email\": \"john@example.com\",\n        \"first_name\": \"John\",\n        \"last_name\": \"Doe\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "List Posts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/posts/?author={{author_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", ""],
+							"query": [
+								{
+									"key": "author",
+									"value": "{{author_id}}",
+									"description": "Optional: Filter posts by author ID",
+									"disabled": true
+								}
+							]
+						},
+						"description": "List all public posts and user's own private posts. Optional query parameter 'author' to filter by author ID."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/posts/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "posts", ""]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"count\": 2,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"id\": 1,\n            \"title\": \"My First Post\",\n            \"content\": \"This is the content of my first post.\",\n            \"author\": {\n                \"id\": 1,\n                \"username\": \"john_doe\",\n                \"email\": \"john@example.com\",\n                \"first_name\": \"John\",\n                \"last_name\": \"Doe\"\n            },\n            \"is_private\": false,\n            \"created_at\": \"2024-01-15T10:30:00Z\",\n            \"updated_at\": \"2024-01-15T10:30:00Z\",\n            \"comments_count\": 3\n        },\n        {\n            \"id\": 2,\n            \"title\": \"Private Post\",\n            \"content\": \"This is a private post.\",\n            \"author\": {\n                \"id\": 1,\n                \"username\": \"john_doe\",\n                \"email\": \"john@example.com\",\n                \"first_name\": \"John\",\n                \"last_name\": \"Doe\"\n            },\n            \"is_private\": true,\n            \"created_at\": \"2024-01-15T11:00:00Z\",\n            \"updated_at\": \"2024-01-15T11:00:00Z\",\n            \"comments_count\": 0\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Retrieve Post",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/posts/{{post_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", "{{post_id}}", ""]
+						},
+						"description": "Retrieve a specific post by ID. Can only view public posts or own private posts."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/posts/1/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "posts", "1", ""]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"title\": \"My First Post\",\n    \"content\": \"This is the content of my first post.\",\n    \"author\": {\n        \"id\": 1,\n        \"username\": \"john_doe\",\n        \"email\": \"john@example.com\",\n        \"first_name\": \"John\",\n        \"last_name\": \"Doe\"\n    },\n    \"is_private\": false,\n    \"created_at\": \"2024-01-15T10:30:00Z\",\n    \"updated_at\": \"2024-01-15T10:30:00Z\",\n    \"comments_count\": 3\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"My New Post\",\n    \"content\": \"This is the content of my new post. It can be public or private.\",\n    \"is_private\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/posts/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", ""]
+						},
+						"description": "Create a new post. Set 'is_private' to true for private posts, false for public posts."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"My New Post\",\n    \"content\": \"This is the content of my new post.\",\n    \"is_private\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/posts/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "posts", ""]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"title\": \"My New Post\",\n    \"content\": \"This is the content of my new post.\",\n    \"author\": {\n        \"id\": 1,\n        \"username\": \"john_doe\",\n        \"email\": \"john@example.com\",\n        \"first_name\": \"John\",\n        \"last_name\": \"Doe\"\n    },\n    \"is_private\": false,\n    \"created_at\": \"2024-01-15T12:00:00Z\",\n    \"updated_at\": \"2024-01-15T12:00:00Z\",\n    \"comments_count\": 0\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Create Comment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"post\": {{post_id}},\n    \"comment_text\": \"This is a great post!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/comments/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "comments", ""]
+						},
+						"description": "Add a comment to a public post. The post author will receive an email notification via Celery task."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"post\": 1,\n    \"comment_text\": \"This is a great post!\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/comments/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "comments", ""]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"post\": 1,\n    \"comment_text\": \"This is a great post!\",\n    \"commenter\": {\n        \"id\": 2,\n        \"username\": \"jane_doe\",\n        \"email\": \"jane@example.com\",\n        \"first_name\": \"Jane\",\n        \"last_name\": \"Doe\"\n    },\n    \"created_at\": \"2024-01-15T13:00:00Z\",\n    \"post_title\": \"My First Post\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/comments/{{comment_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "comments", "{{comment_id}}", ""]
+						},
+						"description": "Delete a comment. Users can only delete their own comments."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/comments/1/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "comments", "1", ""]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "post_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "comment_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "author_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "uidb64",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
