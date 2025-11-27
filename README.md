@@ -172,6 +172,27 @@ demo-project/
 └── Blog_API.postman_collection.json  # Postman collection
 ```
 
+### Run all tests:
+```bash
+pytest blog/tests.py -v
+```
+
+### Run all tests:
+```bash
+pytest blog/tests.py -v
+```
+
+### Run tests for a specific class:
+```bash
+pytest blog/tests.py::TestSignupView -v
+
+```
+
+### Run a specific test:
+```bash
+pytest blog/tests.py::TestSignupView::test_successful_signup -v
+```
+
 ## Troubleshooting
 
 ### Database Connection Issues
