@@ -24,7 +24,7 @@ A Django REST API project for managing a blog with user authentication, private 
 ### 1. Clone the repository and navigate to the project directory
 
 ```bash
-cd /home/ad/demo-project
+cd /home/ad/django-blog-api
 ```
 
 ### 2. Create and activate a virtual environment
@@ -46,16 +46,21 @@ Create a PostgreSQL database:
 
 ```bash
 sudo -u postgres psql
-CREATE DATABASE blog_db;
-CREATE USER postgres WITH PASSWORD 'postgres';
+CREATE DATABASE blog;
+CREATE USER postgres WITH PASSWORD 'admin';
 ALTER ROLE postgres SET client_encoding TO 'utf8';
 ALTER ROLE postgres SET default_transaction_isolation TO 'read committed';
 ALTER ROLE postgres SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE blog_db TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE blog TO postgres;
 \q
 ```
 
-**Note**: Update database credentials in `config/settings.py` if you use different values.
+**Note**: The default database configuration in `config/settings.py` uses:
+- Database name: `blog`
+- User: `postgres`
+- Password: `admin`
+
+Update these credentials in `config/settings.py` if you use different values.
 
 ### 5. Run migrations
 
@@ -136,9 +141,9 @@ Update database settings in `config/settings.py` if needed:
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "blog_db",
+        "NAME": "blog",
         "USER": "postgres",
-        "PASSWORD": "postgres",
+        "PASSWORD": "admin",
         "HOST": "localhost",
         "PORT": "5432",
     }
@@ -152,7 +157,7 @@ Celery is configured to use Redis as the broker. Update `CELERY_BROKER_URL` in `
 ## Project Structure
 
 ```
-demo-project/
+django-blog-api/
 ├── blog/                    # Main application
 │   ├── models.py           # Post and Comment models
 │   ├── views.py            # API views (class-based)
@@ -168,13 +173,9 @@ demo-project/
 │   └── __init__.py         # Celery app initialization
 ├── manage.py               # Django management script
 ├── requirements.txt        # Python dependencies
+├── pytest.ini             # Pytest configuration
 ├── README.md              # This file
 └── Blog_API.postman_collection.json  # Postman collection
-```
-
-### Run all tests:
-```bash
-pytest blog/tests.py -v
 ```
 
 ### Run all tests:
