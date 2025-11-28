@@ -5,12 +5,13 @@ A Django REST API project for managing a blog with user authentication, private 
 ## Features
 
 - **User Authentication**: Signup with email verification and login using email/password
+- **Admin Panel**: Email-based login for Django admin (no username required)
 - **Post Management**: Create, list, and retrieve posts with public/private visibility
 - **Comment System**: Add comments to public posts with email notifications
 - **Asynchronous Tasks**: Celery integration for sending email notifications
 - **PostgreSQL Database**: Production-ready database setup
 - **RESTful API**: Django REST Framework with class-based views
-- **Comprehensive Tests**: Unit tests for all major endpoints
+- **Comprehensive Tests**: Professional test structure with fixtures and organized test files
 
 ## Prerequisites
 
@@ -74,6 +75,8 @@ python manage.py migrate
 ```bash
 python manage.py createsuperuser
 ```
+
+**Note**: Admin panel supports email-based login. Use your email and password to login at `http://localhost:8000/admin/`
 
 ### 7. Start Redis (required for Celery)
 
@@ -164,8 +167,13 @@ django-blog-api/
 │   ├── serializers.py      # DRF serializers
 │   ├── tasks.py            # Celery tasks
 │   ├── urls.py             # URL routing
-│   ├── tests.py            # Unit tests
-│   └── admin.py            # Admin configuration
+│   └── admin.py            # Admin configuration (email-based login)
+├── tests/                  # Test package (root level)
+│   ├── __init__.py         # Test package initialization
+│   ├── conftest.py         # Shared fixtures and test configuration
+│   ├── test_authentication.py  # Signup & Login tests
+│   ├── test_posts.py       # Post API tests
+│   └── test_comments.py    # Comment API tests
 ├── config/                 # Project settings
 │   ├── settings.py         # Django settings
 │   ├── urls.py             # Root URL configuration
@@ -178,21 +186,39 @@ django-blog-api/
 └── Blog_API.postman_collection.json  # Postman collection
 ```
 
+## Testing
+
+The project uses a professional test structure with pytest and Django. Tests are organized in the root-level `tests/` directory with shared fixtures in `conftest.py`.
+
 ### Run all tests:
 ```bash
-pytest blog/tests.py -v
+pytest tests/ -v
+```
+
+### Run tests for a specific file:
+```bash
+pytest tests/test_authentication.py -v
+pytest tests/test_posts.py -v
+pytest tests/test_comments.py -v
 ```
 
 ### Run tests for a specific class:
 ```bash
-pytest blog/tests.py::TestSignupView -v
-
+pytest tests/test_authentication.py::TestSignupView -v
+pytest tests/test_authentication.py::TestLoginView -v
 ```
 
 ### Run a specific test:
 ```bash
-pytest blog/tests.py::TestSignupView::test_successful_signup -v
+pytest tests/test_authentication.py::TestSignupView::test_successful_signup -v
 ```
+
+### Test Structure:
+- **tests/conftest.py**: Contains shared fixtures (`api_client`, `create_user`, `authenticated_client`, `create_post`)
+- **tests/test_authentication.py**: Tests for signup and login endpoints
+- **tests/test_posts.py**: Tests for post creation and management
+- **tests/test_comments.py**: Tests for comment addition with Celery task verification
+
 
 ## Troubleshooting
 
